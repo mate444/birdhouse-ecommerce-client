@@ -10,7 +10,7 @@ interface BirdhouseStyle {
 
 interface BirdhousePicture {
   id: number;
-  picture: Blob | undefined;
+  picture: string;
 }
 
 export interface BirdhouseInterface {
