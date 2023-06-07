@@ -8,46 +8,41 @@ export function useCartActions () {
   return {
     addItem,
     getCart,
-    changeCartItemQuantity
+    changeItemQuantity,
+    removeItem
   };
 
   function addItem (item: BirdhouseCartItemInterface) {
-    setCart((oldState: { items: BirdhouseCartItemInterface[] }) => {
-      //If there is no cart in localStorage, create one
-      if (!localStorage.getItem("cart")) localStorage.setItem("cart", `{ "items": [] }`);
-      const cartItems = localStorage.getItem("cart");
-      if(!cartItems) return "Unknown Error with Local Storage";
-      const parsedCartItems: { items: BirdhouseCartItemInterface[] } = JSON.parse(cartItems);
-      const foundItem = parsedCartItems.items.find((i) => i.birdhouseId === item.birdhouseId);
-      // If item doesn't exists in cart, add a new one.
-      if (!foundItem) {
-        localStorage.setItem("cart", JSON.stringify({
-          items: parsedCartItems.items.concat(item),
-        }));
+    //If there is no cart in localStorage, create one
+    if (!localStorage.getItem("cart")) localStorage.setItem("cart", `{ "items": [] }`);
+    const cartItems = localStorage.getItem("cart");
+    if(!cartItems) return "Unknown Error with Local Storage";
+    const parsedCart: { items: BirdhouseCartItemInterface[] } = JSON.parse(cartItems);
+    const foundItem = parsedCart.items.find((i) => i.birdhouseId === item.birdhouseId);
+    // If item doesn't exists in cart, add a new one.
+    if (!foundItem) {
+      localStorage.setItem("cart", JSON.stringify({
+        items: parsedCart.items.concat(item),
+      }));
+      return setCart({items: [...parsedCart.items, item]});
+    }
+    // if item quantity surpasses stock, don't add it
+    if (foundItem.quantity + item.quantity > item.stock) return `You have ${foundItem.quantity} of ${item.stock} available`;
+    // if it exists, increase the quantity of it.
+    const newStateItems = parsedCart.items.map((i: BirdhouseCartItemInterface) => {
+      if (i.birdhouseId === item.birdhouseId) {
         return {
-          items: [...parsedCartItems.items, item],
+          ...i,
+          quantity: i.quantity + item.quantity
         };
       }
-      // if item quantity surpasses stock, don't add it
-      if (foundItem.quantity + item.quantity > item.stock) return oldState;
-      // if it exists, increase the quantity of it.
-      const newStateItems = parsedCartItems.items.map((i: BirdhouseCartItemInterface) => {
-        if (i.birdhouseId === item.birdhouseId) {
-          return {
-            ...i,
-            quantity: i.quantity + item.quantity
-          };
-        }
-        return {...i};
-      });
-      
-      localStorage.setItem("cart", JSON.stringify({
-        items: newStateItems,
-      }));
-      return {
-        items: newStateItems,
-      };
+      return {...i};
     });
+    
+    localStorage.setItem("cart", JSON.stringify({
+      items: newStateItems,
+    }));
+    return setCart({ items: newStateItems });
   }
 
   function getCart () {
@@ -55,29 +50,44 @@ export function useCartActions () {
     if (!localStorage.getItem("cart")) localStorage.setItem("cart", `{ "items": [] }`);
     const cartItems = localStorage.getItem("cart");
     if(!cartItems) return "Unknown Error with Local Storage";
-    const parsedCartItems: { items: BirdhouseCartItemInterface[] } = JSON.parse(cartItems);
+    const parsedCart: { items: BirdhouseCartItemInterface[] } = JSON.parse(cartItems);
     setCart({
-      items: parsedCartItems.items,
+      items: parsedCart.items,
     });
   }
 
-  function changeCartItemQuantity (amount: number, birdhouseId: string) {
+  function changeItemQuantity (amount: number, birdhouseId: string) {
     setCart((oldState: { items: BirdhouseCartItemInterface[] }) => {
       const cartItems = localStorage.getItem("cart");
       if(!cartItems) return "Unknown Error with Local Storage";
-      const parsedCartItems: { items: BirdhouseCartItemInterface[] } = JSON.parse(cartItems);
-      const foundItem = parsedCartItems.items.find((it) => it.birdhouseId === birdhouseId);
+      const parsedCart: { items: BirdhouseCartItemInterface[] } = JSON.parse(cartItems);
+      const foundItem = parsedCart.items.find((it) => it.birdhouseId === birdhouseId);
       if (foundItem) {
         if (amount > foundItem.stock) return oldState;
         // if it exists, increase the quantity of it.
         foundItem.quantity = amount;
         localStorage.setItem("cart", JSON.stringify({
-          items: parsedCartItems.items,
+          items: parsedCart.items,
         }));
         return {
-          items: parsedCartItems.items,
+          items: parsedCart.items,
         };
       }
+    });
+  }
+
+  function removeItem (birdhouseId: string) {
+    setCart(() => {
+      const cartItems = localStorage.getItem("cart");
+      if(!cartItems) return "Unknown Error with Local Storage";
+      const parsedCart: { items: BirdhouseCartItemInterface[] } = JSON.parse(cartItems);
+      const filteredCartItems = parsedCart.items.filter((it) => it.birdhouseId !== birdhouseId);
+      localStorage.setItem("cart", JSON.stringify({
+        items: filteredCartItems
+      }));
+      return {
+        items: filteredCartItems
+      };
     });
   }
 }
