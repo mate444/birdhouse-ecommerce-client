@@ -24,3 +24,12 @@ export interface BirdhouseInterface {
   colors: BirdhouseColor[];
   styles: BirdhouseStyle[];
 }
+
+export interface BirdhouseCartItemInterface {
+  birdhouseId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  picture: string;
+  stock: number;
+}
