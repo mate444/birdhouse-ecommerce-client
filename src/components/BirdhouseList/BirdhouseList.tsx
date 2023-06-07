@@ -15,7 +15,7 @@ const BirdhouseList: FC<BirdhouseListProps> = (props) => {
           key={b.birdhouseId}
           price={b.price}
           name={b.name}
-          size={b.size}
+          stock={b.stock}
           picture={b.pictures[0]?.picture}
           id={b.birdhouseId}
         />

@@ -30,7 +30,7 @@ const Carrousel: FC<{ pictures: { id: number, picture: string }[] }> = (props) =
         </Button>
         <Box>
           <Image
-            src={props.pictures[currentIndex].picture}
+            src={props.pictures[currentIndex]?.picture}
             fallbackSrc={defaultBirdhousePicture}
           />
         </Box>

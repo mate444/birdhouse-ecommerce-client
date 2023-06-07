@@ -1,13 +1,12 @@
 import React, { FC, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
-import defaultBirdhousePicture from "../../assets/default_birdhouse.jpg";
 import { birdhouseDetailAtom } from "../../states/birdhouse";
 import { useBirdhouseActions } from "../../actions/birdhouse.actions";
 import { BirdhouseInterface } from "../../interfaces/Birdhouse.interface";
+import { useCartActions } from "../../actions/cart.actions";
 import Carrousel from "../Carrousel/Carrousel";
 import { 
   Box,
-  Image,
   Heading,
   Text,
   Button
@@ -16,6 +15,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 const BirdhouseDetail: FC = () => {
   const [cartQuantity, setCartQuantity] = useState(1);
+  const { addItem } = useCartActions();
   const { getById } = useBirdhouseActions();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -59,7 +59,16 @@ const BirdhouseDetail: FC = () => {
             </Box>
             <Box>
               {/* Add button functionality when cart gets in progress */}
-              <Button> Add to cart </Button>
+              <Button onClick={() => addItem({
+                birdhouseId: birdhouseDetail.birdhouseId,
+                name: birdhouseDetail.name,
+                price: birdhouseDetail.price,
+                picture: birdhouseDetail.pictures[0].picture,
+                stock: birdhouseDetail.stock,
+                quantity: cartQuantity
+              })}>
+                Add to cart
+              </Button>
             </Box>
           </Box>
           <Box>

@@ -12,16 +12,18 @@ import {
   Stack
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { useCartActions } from "../../actions/cart.actions";
 
 interface BirdhouseCardProps {
   price: number;
   name: string;
-  size: string;
   id: string;
   picture: string;
+  stock: number;
 }
 
 const BirdhouseCard: FC<BirdhouseCardProps> = (props) => {
+  const { addItem } = useCartActions();
   return (
     <Box 
       // w={["100vw", "100vw", "30vw", "20vw", "20vw"]}
@@ -47,7 +49,14 @@ const BirdhouseCard: FC<BirdhouseCardProps> = (props) => {
           </Stack>
         </CardBody>
         <CardFooter>
-          <Button>
+          <Button onClick={() => addItem({
+            birdhouseId: props.id,
+            name: props.name,
+            price: props.price,
+            picture: props.picture,
+            stock: props.stock,
+            quantity: 1
+          })}>
             Add to cart
           </Button>
         </CardFooter>
