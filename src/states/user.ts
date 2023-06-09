@@ -2,5 +2,5 @@ import { atom } from "recoil";
 
 export const userAtom = atom({
   key: "user",
-  default: {}
+  default: JSON.parse(localStorage.getItem("user") || "{}")
 });
