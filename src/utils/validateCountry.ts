@@ -11,7 +11,7 @@ export function IsCountry (validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate (value: any, args: ValidationArguments) {
-          return typeof value === "string" && isValid(value);
+          return typeof value === "string" && isValid(getAlpha2Code(value, "en"));
         }
       }
     });

@@ -3,6 +3,7 @@ import Home from "./components/Home/Home";
 import BirdhouseDetail from "./components/BirdhouseDetail/BirdhouseDetail";
 import Cart from "./components/Cart/Cart";
 import Register from "./components/Register/Register";
+import Login from "./components/Login/Login";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path='/birdhouse/:id' element={<BirdhouseDetail />}/>
         <Route path='/cart' element={<Cart />}/>
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
         <Route path='*' element={<h1>404 Not Found</h1>} />
       </Routes>
     </>

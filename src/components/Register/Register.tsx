@@ -11,9 +11,12 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Link,
   Select,
   Tooltip,
-  useToast
+  Text,
+  useToast,
+  CircularProgress
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import {
@@ -26,8 +29,9 @@ import { classValidatorResolver } from "@hookform/resolvers/class-validator";
 import { useUserActions } from "../../actions/user.actions";
 import { IsCountry } from "../../utils/validateCountry";
 import { getCountries } from "../../utils/countries";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as ReactLink } from "react-router-dom";
 
+// Add sending validation for controlling loaders
 class UserRegister {
   @MaxLength(255)
   @IsEmail({}, { message: "Invalid email" })
@@ -46,7 +50,7 @@ const resolver = classValidatorResolver(UserRegister);
 const Register: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm<UserRegister>({ resolver });
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<UserRegister>({ resolver });
   const toast = useToast();
   const registerAction = useUserActions(toast, navigate).register;
   const countries = getCountries();
@@ -92,9 +96,16 @@ const Register: FC = () => {
                 <option key={c.code} value={c.name}>{c.name}</option>
               ))
             }</Select>
-            <Button type="submit">Create</Button>
+            <Button disabled={isSubmitting} type="submit">{ isSubmitting ? <CircularProgress isIndeterminate/> : "Create" }</Button>
           </FormControl>
         </form>
+      </Box>
+      <Box>
+        <Text>
+          Already have an account?
+          Log in{" "}
+          <Link as={ReactLink} to="/login"> here</Link>
+        </Text>
       </Box>
     </Box>
   );
