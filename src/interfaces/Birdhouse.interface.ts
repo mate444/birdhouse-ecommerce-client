@@ -1,6 +1,5 @@
-interface BirdhouseColor {
-  id: number;
-  color: string;
+class CreateBirdhouseStyle {
+  name: string;
 }
 
 interface BirdhouseStyle {
@@ -13,15 +12,19 @@ interface BirdhousePicture {
   picture: string;
 }
 
+export interface IBirdhouseFormPicture {
+  fileContent: string;
+  type: string
+}
+
 export interface BirdhouseInterface {
   birdhouseId: string;
   name: string;
   price: number;
-  size: string;
+  size: number;
   stock: number;
   description: string | undefined;
   pictures: BirdhousePicture[];
-  colors: BirdhouseColor[];
   styles: BirdhouseStyle[];
 }
 
@@ -32,4 +35,14 @@ export interface BirdhouseCartItemInterface {
   quantity: number;
   picture: string;
   stock: number;
+}
+
+export interface ICreateBirdhouse {
+  name: string;
+  price: string;
+  size: string;
+  stock: string;
+  description: string | undefined;
+  pictures: FileList;
+  styles: CreateBirdhouseStyle[];
 }
