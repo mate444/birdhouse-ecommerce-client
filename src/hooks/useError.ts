@@ -13,6 +13,12 @@ export const useError = (error: unknown, toast: (arg: UseToastOptions) => void) 
       status: "error"
     });
   }
+  else if (typeof error === "string") toast({
+    title: error,
+    duration: 5000,
+    isClosable: true,
+    status: "error"
+  });
 
   function formatRequestError (error: AxiosError): string {
     switch (error.response?.status) {
