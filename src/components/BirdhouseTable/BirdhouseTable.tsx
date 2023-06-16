@@ -39,7 +39,7 @@ const BirdhouseTable: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [queryParams, setQueryParams] = useSearchParams();
   const toast = useToast();
-  const { getAll } = useBirdhouseActions(toast);
+  const { getAll, update } = useBirdhouseActions(toast);
   const birdhouseState = useRecoilValue(birdhousesAtom);
   let page = queryParams.get("page");
   useEffect(() => {
@@ -61,16 +61,17 @@ const BirdhouseTable: FC = () => {
       </Thead>
       <Tbody>
         {  birdhouseState.birdhouses.map((b: BirdhouseInterface) => (
-          <BirdhouseCell 
+          <BirdhouseCell
             key={b.birdhouseId}
             birdhouseId={b.birdhouseId}
+            update={update}
             description={b.description}
             name={b.name}
             price={`${b.price}`}
             size={`${b.size}`}
             stock={`${b.stock}`}
             styles={b.styles}
-            pictures={b.pictures}  
+            pictures={b.pictures}
           />
         )) }
       </Tbody>

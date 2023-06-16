@@ -2,12 +2,12 @@ class CreateBirdhouseStyle {
   name: string;
 }
 
-interface BirdhouseStyle {
-  id: number;
+interface IBirdhouseStyle {
+  id?: number;
   style: string;
 }
 
-interface BirdhousePicture {
+interface IBirdhousePicture {
   id: number;
   picture: string;
 }
@@ -23,9 +23,9 @@ export interface BirdhouseInterface {
   price: number;
   size: number;
   stock: number;
-  description: string | undefined;
-  pictures: BirdhousePicture[];
-  styles: BirdhouseStyle[];
+  description: string;
+  pictures: IBirdhousePicture[];
+  styles: IBirdhouseStyle[];
 }
 
 export interface BirdhouseCartItemInterface {
@@ -45,4 +45,15 @@ export interface ICreateBirdhouse {
   description: string | undefined;
   pictures: FileList;
   styles: CreateBirdhouseStyle[];
+}
+
+export interface IUpdateBirdhouse {
+  birdhouseId: string;
+  name: string;
+  price: string;
+  size: string;
+  stock: string;
+  description: string;
+  pictures: string[];
+  styles: string[];
 }
