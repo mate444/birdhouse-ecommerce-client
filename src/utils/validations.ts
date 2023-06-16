@@ -27,6 +27,10 @@ function isString (value: unknown) {
   return typeof value === "string";
 }
 
+function required (value: unknown) {
+  return typeof value !== "undefined" || value !== null;
+}
+
 export {
   isArray,
   isInt,
@@ -34,5 +38,6 @@ export {
   maxLength,
   maxSizeArray,
   minLength,
-  isString
+  isString,
+  required
 };
