@@ -1,11 +1,10 @@
 import { useSetRecoilState } from "recoil";
 import { useFetch } from "../hooks/useFetch";
-import { birdhousesAtom, birdhouseDetailAtom } from "../states/birdhouse";
-import { ICreateBirdhouse } from "../interfaces/Birdhouse.interface";
+import { birdhousesAtom, birdhouseDetailAtom, IBirdhouseAtom } from "../states/birdhouse";
+import { ICreateBirdhouse, IUpdateBirdhouse } from "../interfaces/Birdhouse.interface";
 import { NavigateFunction } from "react-router-dom";
 import { UseToastOptions } from "@chakra-ui/react";
 import { useError } from "../hooks/useError";
-import { setFormatData } from "../utils/setFormatData";
 
 export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, navigate?: NavigateFunction) {
   const baseUrl = `${import.meta.env.VITE_API_URL}/birdhouse`;
@@ -17,13 +16,14 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
     create,
     getAll,
     getById,
-    cleanBirdhouseDetail
+    cleanBirdhouseDetail,
+    update
   };
 
   async function getAll (page: string, search: string, sort?: string) {
     try {
       const response = await birdhouseFetch.get(`${baseUrl}?page=${page}&search=${search}&sort=${sort || ""}`);
-      setBirdhouses((oldBirdhouseState) => {
+      setBirdhouses((oldBirdhouseState: IBirdhouseAtom) => {
         return {
           ...oldBirdhouseState,
           birdhouses: response.data,
@@ -66,6 +66,29 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
           status: "success",
           duration: 5000,
           isClosable: true
+        });
+      }
+    } catch (err) {
+      if (toast) {
+        useError(err, toast);
+      }
+    }
+  }
+
+  async function update (birdhouse: IUpdateBirdhouse) {
+    try {
+      await birdhouseFetch.patch(`${baseUrl}`, {
+        ...birdhouse,
+        price: parseInt(birdhouse.price),
+        stock: parseInt(birdhouse.stock),
+        size: parseInt(birdhouse.size)
+      });
+      if (toast) {
+        toast({
+          title: "Birdhouse was updated",
+          duration: 5000,
+          isClosable: true,
+          status: "success"
         });
       }
     } catch (err) {
