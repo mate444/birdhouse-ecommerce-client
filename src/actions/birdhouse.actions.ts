@@ -1,7 +1,7 @@
 import { useSetRecoilState } from "recoil";
 import { useFetch } from "../hooks/useFetch";
 import { birdhousesAtom, birdhouseDetailAtom, IBirdhouseAtom } from "../states/birdhouse";
-import { ICreateBirdhouse, IUpdateBirdhouse } from "../interfaces/Birdhouse.interface";
+import { ICreateBirdhouse, IUpdateBirdhouse, BirdhouseStatusEnum } from "../interfaces/Birdhouse.interface";
 import { NavigateFunction } from "react-router-dom";
 import { UseToastOptions } from "@chakra-ui/react";
 import { useError } from "../hooks/useError";
@@ -17,7 +17,8 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
     getAll,
     getById,
     cleanBirdhouseDetail,
-    update
+    update,
+    remove
   };
 
   async function getAll (page: string, search: string, sort?: string) {
@@ -94,6 +95,25 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
     } catch (err) {
       console.log(err);
       if (toast) {
+        useError(err, toast);
+      }
+    }
+  }
+
+  async function remove (params: { birdhouseId: string, status: BirdhouseStatusEnum }) {
+    try {
+      await birdhouseFetch.delete(`${baseUrl}?birdhouseId=${params.birdhouseId}&status=${params.status}`);
+      if (toast) {
+        toast({
+          title: `Birdhouse succesfully ${params.status === BirdhouseStatusEnum.inactive ? "disabled" : "restored"}`,
+          duration: 5000,
+          isClosable: true,
+          status: "success"
+        });
+      }
+    } catch (err) {
+      if (toast) {
+        console.log(err)
         useError(err, toast);
       }
     }

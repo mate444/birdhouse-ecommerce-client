@@ -2,6 +2,11 @@ class CreateBirdhouseStyle {
   name: string;
 }
 
+export enum BirdhouseStatusEnum {
+  active = "active",
+  inactive = "inactive"
+}
+
 interface IBirdhouseStyle {
   id?: number;
   style: string;
@@ -23,6 +28,7 @@ export interface BirdhouseInterface {
   price: number;
   size: number;
   stock: number;
+  status: BirdhouseStatusEnum;
   description: string;
   pictures: IBirdhousePicture[];
   styles: IBirdhouseStyle[];
@@ -56,4 +62,5 @@ export interface IUpdateBirdhouse {
   description: string;
   pictures: string[];
   styles: string[];
+  status: BirdhouseStatusEnum;
 }
