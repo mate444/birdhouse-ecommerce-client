@@ -39,7 +39,7 @@ const BirdhouseTable: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [queryParams, setQueryParams] = useSearchParams();
   const toast = useToast();
-  const { getAll, update } = useBirdhouseActions(toast);
+  const { getAll, update, remove } = useBirdhouseActions(toast);
   const birdhouseState = useRecoilValue(birdhousesAtom);
   let page = queryParams.get("page");
   useEffect(() => {
@@ -65,6 +65,7 @@ const BirdhouseTable: FC = () => {
             key={b.birdhouseId}
             birdhouseId={b.birdhouseId}
             update={update}
+            remove={remove}
             description={b.description}
             name={b.name}
             price={`${b.price}`}
@@ -72,6 +73,7 @@ const BirdhouseTable: FC = () => {
             stock={`${b.stock}`}
             styles={b.styles}
             pictures={b.pictures}
+            status={b.status}
           />
         )) }
       </Tbody>

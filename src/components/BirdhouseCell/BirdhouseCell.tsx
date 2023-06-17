@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { useFormError } from "../../hooks/useFormError";
 import {
   Td,
@@ -12,11 +12,10 @@ import {
   ButtonGroup,
   CircularProgress,
   Box,
-  UseToastOptions,
 } from "@chakra-ui/react";
-import { FaPen, FaTimes, FaSave, FaRegPlusSquare, FaRegTrashAlt } from "react-icons/fa";
+import { FaPen, FaTimes, FaTrashRestore, FaSave, FaRegPlusSquare, FaTrash } from "react-icons/fa";
 import { birdhouseValidations, BirdhouseCellError } from "./validations";
-import { IUpdateBirdhouse } from "../../interfaces/Birdhouse.interface";
+import { IUpdateBirdhouse, BirdhouseStatusEnum } from "../../interfaces/Birdhouse.interface";
 
 interface IBirdhouseCellProps {
   birdhouseId: string;
@@ -25,12 +24,14 @@ interface IBirdhouseCellProps {
   stock: string;
   description: string;
   size: string;
+  status: BirdhouseStatusEnum;
   styles: { style: string, id?: number }[];
   update: (birdhouse: IUpdateBirdhouse) => Promise<void>;
+  remove: (body: { birdhouseId: string, status: BirdhouseStatusEnum }) => Promise<void>;
   pictures: { picture: string; id: number }[];
 }
 
-const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stock, description, size, styles, pictures, update}) => {
+const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stock, description, size, styles, pictures, status, update, remove }) => {
   const [changes, setChanges] = useState<IUpdateBirdhouse>({
     birdhouseId,
     name,
@@ -38,6 +39,7 @@ const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stoc
     stock,
     description,
     size,
+    status,
     styles: styles.map((s) => s.style),
     pictures: pictures.map((p) => p.picture)
   });
@@ -73,6 +75,15 @@ const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stoc
       }).catch(err => console.log(err));
     }
   };
+
+  const handleDelete = () => {
+    const newStatus = changes.status === BirdhouseStatusEnum.active ? BirdhouseStatusEnum.inactive : BirdhouseStatusEnum.active;
+    remove({ birdhouseId, status: newStatus })
+      .then(() => {
+        setChanges({ ...changes, status: newStatus });
+      });
+  };
+
   useEffect(() => {
     setErrors(useFormError(changes, birdhouseValidations));
   }, [changes]);
@@ -125,7 +136,7 @@ const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stoc
               <Button
                 isDisabled={changes.styles.length <= 1}
                 onClick={() => setChanges({...changes, styles: changes.styles.filter((st, index) => i !== index)})}>
-                <FaRegTrashAlt />
+                <FaTrash />
               </Button> :
               null }
           </Box>
@@ -138,6 +149,7 @@ const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stoc
         <ButtonGroup>
           <Button onClick={() => setEditable(!editable)}>{ !editable ? <FaPen/> : <FaTimes />} </Button>
           { isDirty ? <Button onClick={handleSubmit} disabled={isSubmitting}> { !isSubmitting ? <FaSave /> : <CircularProgress isIndeterminate/> } </Button> : null }
+          <Button onClick={handleDelete}>{ changes.status === BirdhouseStatusEnum.active ? <FaTrash /> : <FaTrashRestore /> }</Button>
         </ButtonGroup>
       </Td>
     </Tr>
