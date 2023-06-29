@@ -6,13 +6,14 @@ import { IUserLogin, IUserRegister } from "../interfaces/User.interface";
 import { NavigateFunction } from "react-router-dom";
 import { UseToastOptions } from "@chakra-ui/react";
 
-export function useUserActions (toast: (args: UseToastOptions) => void, navigate: NavigateFunction) {
+export function useUserActions (toast: (args: UseToastOptions) => void, navigate?: NavigateFunction) {
   const baseUrl = `${import.meta.env.VITE_API_URL}/user`;
   const userFetch = useFetch();
   const setUser = useSetRecoilState(userAtom);
   return {
     register,
-    login
+    login,
+    logOut
   };
   
   async function register (data: IUserRegister) {
@@ -26,7 +27,7 @@ export function useUserActions (toast: (args: UseToastOptions) => void, navigate
         duration: 5000,
         isClosable: true
       });
-      navigate("/");
+      navigate !== undefined && navigate("/");
     } catch (err) {
       useError(err, toast);
     }
@@ -43,7 +44,16 @@ export function useUserActions (toast: (args: UseToastOptions) => void, navigate
         duration: 5000,
         isClosable: true
       });
-      navigate("/");
+      navigate !== undefined && navigate("/");
+    } catch (err) {
+      useError(err, toast);
+    }
+  }
+
+  async function logOut () {
+    try {
+      await userFetch.delete(`${baseUrl}/logout`);
+      setUser("{}");
     } catch (err) {
       useError(err, toast);
     }
