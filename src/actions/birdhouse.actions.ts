@@ -18,7 +18,8 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
     getById,
     cleanBirdhouseDetail,
     update,
-    remove
+    remove,
+    setSort
   };
 
   async function getAll (page: string, search: string, sort?: string) {
@@ -113,7 +114,6 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
       }
     } catch (err) {
       if (toast) {
-        console.log(err)
         useError(err, toast);
       }
     }
@@ -121,5 +121,14 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
 
   function cleanBirdhouseDetail () {
     setBirdhouseDetail(null);
+  }
+
+  function setSort (sort: string) {
+    setBirdhouses((oldState: IBirdhouseAtom) => {
+      return {
+        ...oldState,
+        birdhouseSort: sort
+      };
+    });
   }
 }
