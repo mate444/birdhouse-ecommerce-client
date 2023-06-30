@@ -31,6 +31,14 @@ function required (value: unknown) {
   return typeof value !== "undefined" || value !== null;
 }
 
+function isEmail (value: string) {
+  return validator.isEmail(value);
+}
+
+function isStrongPassword (value: string) {
+  return validator.isStrongPassword(value, { minNumbers: 1, minLength: 8, minSymbols: 1 });
+}
+
 export {
   isArray,
   isInt,
@@ -39,5 +47,7 @@ export {
   maxSizeArray,
   minLength,
   isString,
-  required
+  required,
+  isEmail,
+  isStrongPassword
 };
