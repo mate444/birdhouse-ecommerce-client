@@ -1,9 +1,7 @@
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import BirdPic from "../../assets/bird_pic_1.jfif";
 import { useUserActions } from "../../actions/user.actions";
 import { useForm } from "react-hook-form";
-import { classValidatorResolver } from "@hookform/resolvers/class-validator";
-import { IsEmail, IsStrongPassword, MaxLength, IsString } from "class-validator";
 import { 
   Box,
   Button,
@@ -22,23 +20,12 @@ import {
   CircularProgress
 } from "@chakra-ui/react";
 import { Link as ReactLink, useNavigate } from "react-router-dom";
-
-class UserLogin {
-  @MaxLength(255)
-  @IsEmail({}, { message: "Invalid email" })
-    email: string;
-
-  @IsString()
-  @IsStrongPassword({ minNumbers: 1, minLength: 8, minSymbols: 1 }, { message: "Password is not strong enough" })
-    password: string;
-}
-
-const resolver = classValidatorResolver(UserLogin);
+import { ILogin, loginValidations } from "./validations";
 
 const Login: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<UserLogin>({ resolver });
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ILogin>();
   const toast = useToast();
   const { login } = useUserActions(toast, navigate);
   const handlePasswordVisibility = () => {
@@ -59,13 +46,17 @@ const Login: FC = () => {
             <FormErrorMessage>
               {errors.email && errors.email.message}
             </FormErrorMessage>
-            <Input isInvalid={!!errors.email} id="email" {...register("email")} placeholder="Insert your email"/>
+            <Input isInvalid={!!errors.email} id="email" {...register("email", {
+              validate: loginValidations.email
+            })} placeholder="Insert your email"/>
             <FormLabel>Type your password</FormLabel>
             <FormErrorMessage>
               {errors.password && errors.password.message}
             </FormErrorMessage>
             <InputGroup>
-              <Input isInvalid={!!errors.password} id="password" type={ showPassword ? "text" : "password" } {...register("password")} placeholder="Insert your password"/>
+              <Input isInvalid={!!errors.password} id="password" type={ showPassword ? "text" : "password" } {...register("password", {
+                validate: loginValidations.password
+              })} placeholder="Insert your password"/>
               <InputRightElement>
                 <Button  onClick={handlePasswordVisibility}>
                   {showPassword ? "Hide" : "Show"}
