@@ -1,54 +1,102 @@
+import { FC, useState } from "react";
 import {
   Box,
   Flex,
   Text,
-  Stack,
+  HStack,
   Link,
   useColorModeValue,
   useBreakpointValue,
-  Icon
+  Icon,
+  Menu,
+  MenuItem, 
+  useToast,
+  MenuButton,
+  MenuList,
+  MenuDivider,
+  Tooltip
 } from "@chakra-ui/react";
 import { Link as ReactLink } from "react-router-dom";
-import { FaShoppingCart, FaSearch } from "react-icons/fa";
-
-export default function NavBar() {
-
+import { FaListAlt, FaSearch, FaSignOutAlt, FaEllipsisV, FaTimes } from "react-icons/fa";
+import { useSearchParams } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { useUserActions } from "../../actions/user.actions";
+import { userAtom } from "../../states/user";
+import { useBirdhouseActions } from "../../actions/birdhouse.actions";
+import Permission from "../Permission/Permission";
+import SearchBar from "../SearchBar/SearchBar";
+const NavBar: FC = () => {
+  const [showSearchBar, setShowSearchBar] = useState(false);
+  const toast = useToast();
+  const { logOut } = useUserActions(toast);
+  const { getAll } = useBirdhouseActions(toast);
+  const user = useRecoilValue(userAtom);
+  const [queryParams] = useSearchParams();
+  const handleSearch = (search: string) => {
+    getAll(queryParams.get("page") || "1", search);
+  };
   return (
-    <Box position={"sticky"}>
-      <Flex
-        bg={"#1B9706"}
-        color={"white"}
-        minH={"60px"}
-        py={{ base: 2 }}
-        px={{ base: 4 }}
-        borderBottom={1}
-        borderStyle={"solid"}
-        borderColor={useColorModeValue("gray.200", "gray.900")}
-        align={"center"}>
-        <Flex 
-          flex={{ base: 1, md: "auto" }}
-          ml={{ base: 2 }}
-          display={{ base: "flex", md: "none" }}>
-          <Link as={ReactLink} to="/">
-            <Text
-              textAlign={useBreakpointValue({ base: "center", md: "left" })}
-              fontFamily={"heading"}
-              color={useColorModeValue("gray.800", "white")}>
-              Logo
-            </Text>
-          </Link>
-
-          <Stack
-            flex={{ base: 1, md: 0 }}
-            justify={"flex-end"}
-            direction={"row"}
-            spacing={6}>
-            <FaSearch />
-            <Link as={ReactLink} to="/cart"><Icon as={FaShoppingCart}/></Link>
-            <Link as={ReactLink} to="/login">Log In</Link>
-          </Stack>
-        </Flex>
-      </Flex>
-    </Box>
+    <Flex
+      bg={"#1B9706"}
+      color={"white"}
+      h={"70px"}
+      w={"100%"}
+      pl={["30px", "30px", "60px"]}
+      pr={["30px", "30px", "60px"]}
+      alignItems={"center"}>
+      <Link as={ReactLink} to="/">
+        <Text>
+          Logo
+        </Text>
+      </Link>
+      <HStack
+        display="flex"
+        alignItems={"center"}
+        spacing={10}
+        ml={"auto"}>
+          
+        {
+          !showSearchBar ? <Box alignSelf={"cente"} onClick={() => setShowSearchBar(!showSearchBar)}><FaSearch /></Box> : null
+        }
+        {
+          showSearchBar ? <Flex>
+            <SearchBar handleSubmit={handleSearch}/>
+            <Box mt={"20px"} onClick={() => setShowSearchBar(!showSearchBar)}><FaTimes /></Box>
+          </Flex> : null
+        }
+        <Menu>
+          <MenuButton>
+            <Icon as={FaEllipsisV}/>
+          </MenuButton>
+          <MenuList minW={"30px"} color="white" bg="#1B9706">
+            <Permission allowedPermissions={["Dashboard"]}>
+              <MenuItem bg="#1B9706">
+                <Tooltip label="Dashboard">
+                  <Link as={ReactLink} to="/admin/birdhouses">
+                    <span>
+                      <Icon as={FaListAlt} />
+                    </span>
+                  </Link>
+                </Tooltip>
+              </MenuItem>
+            </Permission>
+            { user.id ? <>
+              <MenuDivider />
+              <Tooltip label="Sign out">
+                <MenuItem onClick={logOut} bg="#1B9706">
+                  <span>
+                    <Icon as={FaSignOutAlt}/>
+                  </span>
+                </MenuItem> 
+              </Tooltip>
+            </> : null 
+            }
+            { !user.id ? <Link as={ReactLink} to="/login"><MenuItem bg="#1B9706">Log In</MenuItem></Link> : null }
+          </MenuList>
+        </Menu>
+      </HStack>
+    </Flex>
   );
-}
+};
+
+export default NavBar;
