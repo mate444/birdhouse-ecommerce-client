@@ -58,7 +58,7 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
       formData.append("name", birdhouse.name);
       formData.append("price", birdhouse.price);
       formData.append("size", birdhouse.size);
-      formData.append("styles[]", JSON.stringify(formatedStyles));
+      formatedStyles.forEach((s) => formData.append("styles[]", s));
       formData.append("description", String(birdhouse.description));
       formData.append("stock", birdhouse.stock);
       await birdhouseFetch.post(`${baseUrl}`, formData);

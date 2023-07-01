@@ -17,7 +17,7 @@ import {
 
 const CreateBirdhouse: FC = () => {
   const [file, setFile] = useState<FileList | null>(null);
-  const { register, control, handleSubmit, setValue, setError, formState: { errors, isSubmitting } } = useForm<IBirdhouseValidation>({
+  const { register, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm<IBirdhouseValidation>({
     defaultValues: {
       styles: [{ name: "" }],
     } 
@@ -40,6 +40,7 @@ const CreateBirdhouse: FC = () => {
         return;
       }
     }
+    clearErrors("pictures");
     setFile(e.target.files);
   };
 
