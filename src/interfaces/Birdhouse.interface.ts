@@ -49,7 +49,7 @@ export interface ICreateBirdhouse {
   size: string;
   stock: string;
   description: string | undefined;
-  pictures: FileList;
+  pictures: Blob[];
   styles: CreateBirdhouseStyle[];
 }
 

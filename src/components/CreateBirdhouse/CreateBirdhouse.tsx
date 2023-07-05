@@ -14,9 +14,10 @@ import {
   useToast,
   CircularProgress
 } from "@chakra-ui/react";
+import { convertToWebP, base64ToBlob } from "../../utils/convertToWebp";
 
 const CreateBirdhouse: FC = () => {
-  const [file, setFile] = useState<FileList | null>(null);
+  const [file, setFile] = useState<Blob[] | null>(null);
   const { register, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm<IBirdhouseValidation>({
     defaultValues: {
       styles: [{ name: "" }],
@@ -41,9 +42,18 @@ const CreateBirdhouse: FC = () => {
       }
     }
     clearErrors("pictures");
-    setFile(e.target.files);
+    const webpFiles: Blob[] = [];
+    // console.log(e.target.files[i])
+    convertToWebP(e.target.files)
+      .then((webpImages) => {
+        webpImages.forEach((webp) => {
+          const base64Image = webp.split(",")[1];
+          const webpFile = base64ToBlob(base64Image, "image/webp");
+          webpFiles.push(webpFile);
+        });
+        setFile(webpFiles);
+      });
   };
-
   useEffect(() => {
     if (file) {
       setValue("pictures", file);

@@ -13,7 +13,7 @@ export interface IBirdhouseValidation {
   price: string;
   description: string;
   size: string;
-  pictures: FileList;
+  pictures: Blob[];
   styles: IBirdhouseStyle[]
 }
 
@@ -34,7 +34,7 @@ export const birdhouseValidations = {
   },
   description: {
     minLength: (value: string) => minLength(value, 1) || "Birdhouse description is too short",
-    maxLength: (value: string) => maxLength(value, 30) || "Birdhouse description is too long"
+    maxLength: (value: string) => maxLength(value, 255) || "Birdhouse description is too long"
   },
   styles: {
     minLength: (value: string) => minLength(value, 1) || "Birdhouse style is too short",
