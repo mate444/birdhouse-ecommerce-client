@@ -51,6 +51,7 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
   async function create (birdhouse: ICreateBirdhouse) {
     try {
       const formData = new FormData();
+      if (!birdhouse.pictures) throw "Birdhouse pictures are required";
       for (let i = 0; i < birdhouse.pictures.length; i += 1) {
         formData.append("pictures", birdhouse.pictures[i]);
       }

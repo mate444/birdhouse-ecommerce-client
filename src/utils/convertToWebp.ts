@@ -1,4 +1,5 @@
 // Function to convert image to WebP format
+// PS: Thank you sooo much Chatgpt
 export function convertToWebP(fileList: FileList): Promise<string[]> {
   const files = Array.from(fileList);
   const conversionPromises = files.map((file) => {
@@ -50,7 +51,7 @@ export function convertToWebP(fileList: FileList): Promise<string[]> {
   return Promise.all(conversionPromises);
 }
 
-export function base64ToBlob(base64Data: string, contentType: string): Blob {
+export function base64ToBlob(base64Data: string, contentType: string): File {
   const byteCharacters = atob(base64Data);
   const byteArrays = [];
 
