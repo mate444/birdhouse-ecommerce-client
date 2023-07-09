@@ -5,8 +5,6 @@ import {
   Text,
   HStack,
   Link,
-  useColorModeValue,
-  useBreakpointValue,
   Icon,
   Menu,
   MenuItem, 
@@ -16,9 +14,8 @@ import {
   MenuDivider,
   Tooltip
 } from "@chakra-ui/react";
-import { Link as ReactLink } from "react-router-dom";
+import { Link as ReactLink, useNavigate } from "react-router-dom";
 import { FaListAlt, FaSearch, FaSignOutAlt, FaEllipsisV, FaTimes } from "react-icons/fa";
-import { useSearchParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { useUserActions } from "../../actions/user.actions";
 import { userAtom } from "../../states/user";
@@ -28,12 +25,14 @@ import SearchBar from "../SearchBar/SearchBar";
 const NavBar: FC = () => {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const toast = useToast();
-  const { logOut } = useUserActions(toast);
-  const { getAll } = useBirdhouseActions(toast);
+  const navigate = useNavigate();
+  const { logOut } = useUserActions(toast, navigate);
+  const { setSearch } = useBirdhouseActions(toast);
   const user = useRecoilValue(userAtom);
-  const [queryParams] = useSearchParams();
   const handleSearch = (search: string) => {
-    getAll(queryParams.get("page") || "1", search);
+    const page = "1";
+    setSearch(search);
+    navigate(`/?page=${page}`);
   };
   return (
     <Flex
@@ -54,7 +53,6 @@ const NavBar: FC = () => {
         alignItems={"center"}
         spacing={10}
         ml={"auto"}>
-          
         {
           !showSearchBar ? <Box alignSelf={"cente"} onClick={() => setShowSearchBar(!showSearchBar)}><FaSearch /></Box> : null
         }

@@ -19,7 +19,7 @@ const Home: FC = () => {
       .then(() => {
         window.scrollTo(0, 0);
       });
-  }, [page, birdhouseState.birdhouseSort]);
+  }, [page, birdhouseState.birdhouseSort, birdhouseState.birdhouseSearch]);
   return (
     <Flex marginX={[0, 0, "10vw"]} flexDirection={"column"}>
       <Heading mt="1em" alignSelf={"center"}> Birdhouses showcase </Heading>
