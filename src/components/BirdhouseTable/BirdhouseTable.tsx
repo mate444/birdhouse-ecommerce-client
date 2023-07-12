@@ -8,7 +8,8 @@ import {
   Th,
   useToast,
   Link,
-  Flex
+  Flex,
+  Text
 } from "@chakra-ui/react";
 import Pagination from "../Pagination/Pagination";
 import BirdhouseCell from "../BirdhouseCell/BirdhouseCell";
@@ -21,22 +22,16 @@ import { BirdhouseInterface } from "../../interfaces/Birdhouse.interface";
 
 const columns = [{
   text: "Name",
-  isNumeric: false
 }, {
   text: "price",
-  isNumeric: true
 }, {
   text: "stock",
-  isNumeric: true
 }, {
   text: "size",
-  isNumeric: true
 }, {
   text: "description",
-  isNumeric: false
 }, {
   text: "styles",
-  isNumeric: false
 }];
 
 const BirdhouseTable: FC = () => {
@@ -55,25 +50,26 @@ const BirdhouseTable: FC = () => {
   }, [page, birdhouseState.birdhouseSort]);
   return (
     !isLoading ?
-      <>
-        <Link as={ReactLink} to="/birdhouse/create">
-          <Flex
-            m="10px"
-            bgColor={"#1B9706"}
-            color="white"
-            width="25%"
-            justify="center"
-            borderRadius={20}
-            p="10px">
-            Create a Birdhouse
-          </Flex>
-        </Link>
-        <SortSelect setSort={setSort} route={`/admin/birdhouses?page=1`}/>
-        <Table variant="simple">
+      <Flex flexDir={"column"} gap={1}>
+        <Flex gap={5} alignItems={"center"} alignSelf={"center"}>
+          <Link as={ReactLink} to="/birdhouse/create">
+            <Text
+              whiteSpace={"nowrap"}
+              m="10px"
+              bgColor={"#1B9706"}
+              color="white"
+              borderRadius={20}
+              p="10px">
+              Create a Birdhouse
+            </Text>
+          </Link>
+          <SortSelect setSort={setSort} route={`/admin/birdhouses?page=1`}/>
+        </Flex>
+        <Table minH={"80vh"} bgColor={"white"} variant="simple">
           <Thead>
-            <Tr>
+            <Tr border={"1px solid rgba(0, 0, 0, .2)"}>
               { columns.map((c) => (
-                <Th key={c.text} isNumeric={c.isNumeric}>
+                <Th border={"1px solid rgba(0, 0, 0, .2)"} key={c.text}>
                   {c.text}
                 </Th>
               )) }
@@ -98,8 +94,10 @@ const BirdhouseTable: FC = () => {
             )) }
           </Tbody>
         </Table>
-        <Pagination route="/admin/birdhouses" totalPages={parseInt(birdhouseState.totalPages || "1")} currentPage={parseInt(page || "1")} sort={birdhouseState.birdhouseSort}/>
-      </>
+        <Flex justifyContent={"center"}>
+          <Pagination route="/admin/birdhouses" totalPages={parseInt(birdhouseState.totalPages || "1")} currentPage={parseInt(page || "1")} sort={birdhouseState.birdhouseSort}/>
+        </Flex>
+      </Flex>
       : <CircularProgress isIndeterminate/>);
 };
 

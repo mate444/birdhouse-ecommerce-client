@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useRef } from "react";
+import { FC, useState, useEffect } from "react";
 import { useFormError } from "../../hooks/useFormError";
 import {
   Td,
@@ -11,7 +11,7 @@ import {
   EditablePreview,
   ButtonGroup,
   CircularProgress,
-  Box,
+  Flex,
 } from "@chakra-ui/react";
 import { FaPen, FaTimes, FaTrashRestore, FaSave, FaRegPlusSquare, FaTrash } from "react-icons/fa";
 import { birdhouseValidations, BirdhouseCellError } from "./validations";
@@ -89,63 +89,69 @@ const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stoc
   }, [changes]);
   return (
     <Tr>
-      <Td>
-        <Text>{ errors.name && errors.name }</Text>
+      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+        <Text color={"red"}>{ errors.name && errors.name }</Text>
         <Editable isDisabled={editable === false} defaultValue={changes.name  }>
-          <EditablePreview width="full"/>
+          <EditablePreview h={"full"} width="full"/>
           <Input as={EditableInput} name="name" value={changes.name} onChange={handleChange}/>
         </Editable>
       </Td>
-      <Td>
-        <Text>{ errors.price && errors.price }</Text>
+      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+        <Text color={"red"}>{ errors.price && errors.price }</Text>
         <Editable isDisabled={editable === false} defaultValue={`${price}`}>
-          <EditablePreview width="full"/>
+          <EditablePreview h={"full"} width="full"/>
           <Input as={EditableInput} name="price" value={changes.price} onChange={handleChange} type="number"/>
         </Editable>
       </Td>
-      <Td>
-        <Text>{ errors.stock && errors.stock }</Text>
+      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+        <Text color={"red"}>{ errors.stock && errors.stock }</Text>
         <Editable isDisabled={editable === false} defaultValue={`${stock}`}>
-          <EditablePreview width="full"/> 
+          <EditablePreview h={"full"} width="full"/> 
           <Input as={EditableInput} name="stock" value={changes.stock} onChange={handleChange} type="number" />
         </Editable>
       </Td>
-      <Td>
-        <Text>{ errors.size && errors.size }</Text>
+      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+        <Text color={"red"}>{ errors.size && errors.size }</Text>
         <Editable isDisabled={editable === false} defaultValue={`${size}`}>
-          <EditablePreview width="full"/>
+          <EditablePreview h={"full"} width="full"/>
           <Input as={EditableInput} name="size" value={changes.size} onChange={handleChange} type="number"/>
         </Editable>
       </Td>
-      <Td>
-        <Text>{ errors.description && errors.description }</Text>
+      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+        <Text color={"red"}>{ errors.description && errors.description }</Text>
         <Editable isDisabled={editable === false} defaultValue={description}>
-          <EditablePreview width="full"/>
+          <EditablePreview minH={"40px"} width="full"/>
           <Input as={EditableInput} name="description" value={changes.description} onChange={handleChange}/>
         </Editable>
       </Td>
-      <Td>
+      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
         {changes.styles.map((s, i) => (
-          <Box key={i}>
-            <Text>{errors.styles && errors.styles[i]}</Text>
-            <Editable defaultValue={s}>
-              <EditablePreview width="full"/>
-              <Input as={EditableInput} name="styles" value={changes.styles[i]} onChange={(e) => handleStyleChange(e, i)}/>
-            </Editable>
-            { editable ?
-              <Button
-                isDisabled={changes.styles.length <= 1}
-                onClick={() => setChanges({...changes, styles: changes.styles.filter((st, index) => i !== index)})}>
-                <FaTrash />
-              </Button> :
-              null }
-          </Box>
+          <Flex gap={1} flexDir={"column"} key={i}>
+            <Text color={"red"}>{errors.styles && errors.styles[i]}</Text>
+            <Flex>
+              <Editable isDisabled={editable === false} defaultValue={s} w={"100%"}>
+                <EditablePreview placeholder="Insert new style" h={"full"} width="full"/>
+                <Input as={EditableInput} name="styles" value={changes.styles[i]} onChange={(e) => handleStyleChange(e, i)}/>
+              </Editable>
+              { editable ?
+                <Button
+                  m={"auto"}
+                  isDisabled={changes.styles.length <= 1}
+                  onClick={() => setChanges({...changes, styles: changes.styles.filter((_st, index) => i !== index)})}>
+                  <FaTrash />
+                </Button> :
+                null }
+            </Flex>
+          </Flex>
         ))}
-        { editable ? <Button isDisabled={changes.styles.length >= 4} onClick={() => setChanges({ ...changes, styles: [...changes.styles, ""] })}>
+        { editable ? <Button
+          mt={"10px"}
+          isDisabled={changes.styles.length >= 4}
+          onClick={() => setChanges({ ...changes, styles: [...changes.styles, ""] })}>
           <FaRegPlusSquare />
         </Button> : null}
       </Td>
-      <Td>
+      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
         <ButtonGroup>
           <Button onClick={() => setEditable(!editable)}>{ !editable ? <FaPen/> : <FaTimes />} </Button>
           { isDirty ? <Button onClick={handleSubmit} disabled={isSubmitting}> { !isSubmitting ? <FaSave /> : <CircularProgress isIndeterminate/> } </Button> : null }
