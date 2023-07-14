@@ -1,15 +1,20 @@
 import { cartAtom } from "../states/cart";
 import { useSetRecoilState } from "recoil";
 import { BirdhouseCartItemInterface } from "../interfaces/Birdhouse.interface";
+import { useError } from "../hooks/useError";
+import { useFetch } from "../hooks/useFetch";
+import { UseToastOptions } from "@chakra-ui/react";
+import { NavigateFunction } from "react-router-dom";
 
-export function useCartActions () {
+export function useCartActions (toast?: (args: UseToastOptions) => void, navigate?: NavigateFunction) {
   const setCart = useSetRecoilState(cartAtom);
-
+  const cartFetch = useFetch();
   return {
     addItem,
     getCart,
     changeItemQuantity,
-    removeItem
+    removeItem,
+    goToCheckout
   };
 
   function addItem (item: BirdhouseCartItemInterface) {
@@ -89,5 +94,20 @@ export function useCartActions () {
         items: filteredCartItems
       };
     });
+  }
+
+  async function goToCheckout (data: { birdhouses: BirdhouseCartItemInterface[], price: number, userId: string }) {
+    try {
+      const response = await cartFetch.post("http://localhost:3000/order/checkout", {
+        birdhouses: data.birdhouses,
+        userId: data.userId,
+        price: data.price
+      });
+      window.location = response;
+    } catch (err) {
+      if (toast) {
+        useError(err, toast);
+      }
+    }
   }
 }
