@@ -12,6 +12,10 @@ interface IBirdhouseStyle {
   style: string;
 }
 
+interface ICreateBirdhouseSocialMedia {
+  link: string;
+}
+
 interface IBirdhousePicture {
   id: number;
   picture: string;
@@ -51,6 +55,7 @@ export interface ICreateBirdhouse {
   description: string | undefined;
   pictures: Blob[];
   styles: CreateBirdhouseStyle[];
+  socialMedia: ICreateBirdhouseSocialMedia[];
 }
 
 export interface IUpdateBirdhouse {

@@ -29,10 +29,15 @@ const CreateBirdhouse: FC = () => {
   const { register, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm<IBirdhouseValidation>({
     defaultValues: {
       styles: [{ name: "" }],
-    } 
+      socialMedia: [{ link: "" }]
+    }
   });
-  const { fields, append, remove } = useFieldArray({
+  const styleFields = useFieldArray({
     name: "styles",
+    control
+  });
+  const socialMediaFields = useFieldArray({
+    name: "socialMedia",
     control
   });
   const toast = useToast();
@@ -157,7 +162,7 @@ const CreateBirdhouse: FC = () => {
               bgColor={"#1B9706"}>
                 Insert birdhouse Styles (Max 4)
             </FormLabel>
-            { fields.map((s, i) => (
+            { styleFields.fields.map((s, i) => (
               <Box key={s.id}>
                 <FormErrorMessage>{ errors.styles && errors.styles[i]?.name?.message }</FormErrorMessage>
                 <InputGroup
@@ -176,22 +181,67 @@ const CreateBirdhouse: FC = () => {
                       aria-label="Delete Style"
                       borderRadius={20}
                       icon={<FaTrashAlt />}
-                      isDisabled={fields.length <= 1}
-                      onClick={() => remove(i)} />
+                      isDisabled={styleFields.fields.length <= 1}
+                      onClick={() => styleFields.remove(i)} />
                   </InputRightElement>
                 </InputGroup>
               </Box>
             )) }
             <IconButton
-              aria-label="Add Style"
+              aria-label="Add style"
               icon={<FaPlus/>}
               alignSelf={"center"}
               bgColor={"white"}
               borderRadius={20}
               w={"fit-content"}
               my={"5px"}
-              isDisabled={fields.length >= 4}
-              onClick={() => append({ name: "" })}/>
+              isDisabled={styleFields.fields.length >= 4}
+              onClick={() => styleFields.append({ name: "" })}/>
+            <FormLabel
+              fontWeight={"black"}
+              p={"20px"}
+              borderRadius={5}
+              w={"fit-content"}
+              alignSelf={"center"}
+              textAlign={"center"}
+              bgColor={"#1B9706"}>
+                Insert birdhouse Social Media Links
+            </FormLabel>
+            { socialMediaFields.fields.map((s, i) => (
+              <Flex key={s.id}>
+                <FormErrorMessage>{ errors.socialMedia && errors.socialMedia[i]?.link?.message }</FormErrorMessage>
+                <InputGroup
+                  bgColor={"white"}
+                  borderRadius={20}>
+                  <Input
+                    placeholder="Insert social media link"
+                    borderRadius={20}
+                    isInvalid={!!errors.socialMedia}
+                    {...register(`socialMedia.${i}.link` as const, {
+                      validate: birdhouseValidations.socialMedia
+                    })} />
+                  <InputRightElement>
+                    <IconButton
+                      bgColor={"white"}
+                      aria-label="Delete Style"
+                      borderRadius={20}
+                      icon={<FaTrashAlt />}
+                      isDisabled={socialMediaFields.fields.length <= 1}
+                      onClick={() => socialMediaFields.remove(i)} />
+                  </InputRightElement>
+                </InputGroup>
+              </Flex>
+            )) }
+            <IconButton
+              aria-label="Add social media"
+              icon={<FaPlus/>}
+              alignSelf={"center"}
+              bgColor={"white"}
+              borderRadius={20}
+              w={"fit-content"}
+              my={"5px"}
+              isDisabled={socialMediaFields.fields.length >= 4}
+              onClick={() => socialMediaFields.append({ link: "" })}/>
             <Box
               bgColor={"white"}
               borderRadius={20}

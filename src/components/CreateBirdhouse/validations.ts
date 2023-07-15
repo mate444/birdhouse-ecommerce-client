@@ -2,9 +2,14 @@ import {
   isInt,
   maxLength,
   minLength,
+  isUrl
 } from "../../utils/validations";
 interface IBirdhouseStyle {
     name: string;
+}
+
+interface IBirdhouseSocialMedia {
+  link: string;
 }
 
 export interface IBirdhouseValidation {
@@ -14,7 +19,8 @@ export interface IBirdhouseValidation {
   description: string;
   size: string;
   pictures: Blob[];
-  styles: IBirdhouseStyle[]
+  styles: IBirdhouseStyle[];
+  socialMedia: IBirdhouseSocialMedia[];
 }
 
 
@@ -39,5 +45,8 @@ export const birdhouseValidations = {
   styles: {
     minLength: (value: string) => minLength(value, 1) || "Birdhouse style is too short",
     maxLength: (value: string) => maxLength(value, 45) || "Birdhouse style is too long",
-  }
+  },
+  socialMedia: {
+    isUrl: (value: string) => isUrl(value) || "Social media link must be a URL"
+  },
 };

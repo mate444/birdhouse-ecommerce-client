@@ -56,11 +56,13 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
       for (let i = 0; i < birdhouse.pictures.length; i += 1) {
         formData.append("pictures", birdhouse.pictures[i]);
       }
-      const formatedStyles = birdhouse.styles.map((b: { name: string }) => b.name);
       formData.append("name", birdhouse.name);
       formData.append("price", birdhouse.price);
       formData.append("size", birdhouse.size);
-      formatedStyles.forEach((s) => formData.append("styles[]", s));
+      birdhouse.styles.forEach((s) => formData.append("styles[]", s.name));
+      birdhouse.socialMedia.forEach((s) => {
+        formData.append("socialMedia[]", s.link);
+      });
       formData.append("description", String(birdhouse.description));
       formData.append("stock", birdhouse.stock);
       await birdhouseFetch.post(`${baseUrl}`, formData);
