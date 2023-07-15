@@ -44,6 +44,10 @@ function isCountry (value: string) {
   return typeof value === "string" && isValid(getAlpha2Code(value, "en"));
 }
 
+function isUrl (value: string) {
+  return validator.isURL(value);
+}
+
 export {
   isArray,
   isInt,
@@ -55,5 +59,6 @@ export {
   required,
   isEmail,
   isStrongPassword,
-  isCountry
+  isCountry,
+  isUrl
 };
