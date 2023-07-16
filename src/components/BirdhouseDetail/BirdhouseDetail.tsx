@@ -10,12 +10,17 @@ import {
   Box,
   Heading,
   Text,
-  Button,
   Grid,
   GridItem,
   Flex,
   CircularProgress,
-  IconButton
+  IconButton,
+  useDisclosure,
+  Modal,
+  ModalContent,
+  ModalCloseButton,
+  ModalBody,
+  ModalOverlay
 } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getSocialMediaIcon } from "../../utils/getIcon";
@@ -27,6 +32,7 @@ const BirdhouseDetail: FC = () => {
   const { getById, cleanBirdhouseDetail } = useBirdhouseActions();
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const birdhouseDetail: BirdhouseInterface = useRecoilValue(birdhouseDetailAtom);
 
   // const increaseCartQuantity = (cartQuantity: number) => {
@@ -66,13 +72,25 @@ const BirdhouseDetail: FC = () => {
       templateRows={["1fr repeat(4, auto)", null, null, "repeat(3, auto)"]}>
       { birdhouseDetail ?
         <>
+          <Modal isCentered size={"6xl"} isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalCloseButton />
+              <ModalBody>
+                {/* { birdhouseDetail.pictures.map((p) => (
+                  <Image key={p.picture} src={p.picture}/>
+                )) } */}
+                <Carrousel isDesktop={false} pictures={birdhouseDetail.pictures}/>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
           <GridItem
             border={isDesktop ? "1px" : undefined}
             rowStart={1}
             rowEnd={[1, null, null, 3]}
             colStart={1}
             colEnd={1}>
-            <Carrousel isDesktop={isDesktop} pictures={birdhouseDetail.pictures}/>
+            <Carrousel onOpenModal={onOpen} isDesktop={isDesktop} pictures={birdhouseDetail.pictures}/>
           </GridItem>
           <GridItem
             borderY={isDesktop ? "1px" : undefined}

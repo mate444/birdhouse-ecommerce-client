@@ -3,7 +3,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Icon, Image, Flex, Grid, GridItem } from "@chakra-ui/react";
 import defaultBirdhousePicture from "../../assets/default_birdhouse.jpg";
 
-const Carrousel: FC<{ pictures: { id: number, picture: string }[], isDesktop: boolean }> = (props) => {
+const Carrousel: FC<{ pictures: { id: number, picture: string }[], isDesktop: boolean, onOpenModal?: () => void }> = (props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const goToPrevious = () => {
     const isFirstIndex = currentIndex === 0;
@@ -54,6 +54,7 @@ const Carrousel: FC<{ pictures: { id: number, picture: string }[], isDesktop: bo
             objectFit={"contain"}
             src={props.pictures[currentIndex]?.picture}
             fallbackSrc={defaultBirdhousePicture}
+            onClick={props.onOpenModal}
           />
         </Flex>
       </GridItem>
