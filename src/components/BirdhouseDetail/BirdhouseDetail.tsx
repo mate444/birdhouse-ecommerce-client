@@ -4,6 +4,7 @@ import { birdhouseDetailAtom } from "../../states/birdhouse";
 import { useBirdhouseActions } from "../../actions/birdhouse.actions";
 import { BirdhouseInterface } from "../../interfaces/Birdhouse.interface";
 // import { useCartActions } from "../../actions/cart.actions";
+import { Link as ReactLink } from "react-router-dom";
 import Carrousel from "../Carrousel/Carrousel";
 import { 
   Box,
@@ -14,9 +15,10 @@ import {
   GridItem,
   Flex,
   CircularProgress,
-  Divider
+  IconButton
 } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
+import { getSocialMediaIcon } from "../../utils/getIcon";
 
 const BirdhouseDetail: FC = () => {
   // const [cartQuantity, setCartQuantity] = useState(1);
@@ -75,12 +77,14 @@ const BirdhouseDetail: FC = () => {
           <GridItem
             borderY={isDesktop ? "1px" : undefined}
             borderRight={isDesktop ? "1px" : undefined}
+            display={"flex"}
+            flexDir={"column"}
             rowStart={[2, null, null, 1]}
             rowEnd={[2, null, null, 1]}
             colStart={[1, null, null, 2]}
             colEnd={[1, null, null, 2]}
             p={"20px"}>
-            <Box alignSelf={"flex-start"} mb={"5px"}>
+            <Box alignSelf={"flex-start"} pb={"10px"} mb={"5px"} borderBottom={"1px"}>
               <Heading size={"xl"}>
                 {birdhouseDetail.name}
               </Heading>
@@ -94,8 +98,24 @@ const BirdhouseDetail: FC = () => {
             {/* <Button onClick={() => increaseCartQuantity(cartQuantity)}>+</Button> */}
             {/* <Text>(Limit {birdhouseDetail.stock})</Text> */}
             {/* </Box> */}
-            <Box>
-              <Button
+            <Flex gap={5} mt={"10px"}>
+              { birdhouseDetail.socialMedia.map((s) => {
+                const Icon = getSocialMediaIcon(s.name);
+                return <IconButton 
+                  key={s.link}
+                  aria-label={"go-to-social-page"}
+                  bgColor={"#1B9706"}
+                  borderRadius={10}
+                  icon={<Icon />}
+                  color={"white"}
+                  fontSize={["8vw", "4vw", null, "3vw", "1.5vw"]}
+                  size={"lg"}
+                  as={ReactLink}
+                  to={s.link}
+                  target={"_blank"}
+                />;
+              }) }
+              {/* <Button
               // onClick={() => addItem({
               //   birdhouseId: birdhouseDetail.birdhouseId,
               //   name: birdhouseDetail.name,
@@ -106,8 +126,8 @@ const BirdhouseDetail: FC = () => {
               // })}
               >
                 Add to cart
-              </Button>
-            </Box>
+              </Button> */}
+            </Flex>
           </GridItem>
           <GridItem
             rowStart={[3, null, null, 2]}
@@ -140,12 +160,21 @@ const BirdhouseDetail: FC = () => {
                 </GridItem>
               )) }
             </Grid>
+           
           </GridItem>
+          {/* <GridItem
+            rowStart={3}
+            rowEnd={3}
+            colStart={2}
+            colEnd={2}>
+
+            
+          </GridItem> */}
           <GridItem
             mt={!isDesktop ? "5px" : 0}
             borderX={isDesktop ? "1px" : 0}
             borderBottom={isDesktop ? "1px" : 0}
-            borderTop={"1px"}
+            // borderTop={"1px"}
             borderColor={"rgba(0,0,0,.5)"}
             rowStart={[4, null, null, 3]}
             rowEnd={[4, null, null, 3]}

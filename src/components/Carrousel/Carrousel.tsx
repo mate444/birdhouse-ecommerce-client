@@ -22,6 +22,7 @@ const Carrousel: FC<{ pictures: { id: number, picture: string }[], isDesktop: bo
   };
   return (
     <Grid
+      gap={2}
       templateRows={["1fr", null, null, "1fr"]}
       templateColumns={["1fr", null, "auto 1fr auto"]}>
       <GridItem
