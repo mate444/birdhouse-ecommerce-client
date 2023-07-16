@@ -21,6 +21,11 @@ interface IBirdhousePicture {
   picture: string;
 }
 
+interface ISocialMedia {
+  link: string;
+  name: string;
+}
+
 export interface IBirdhouseFormPicture {
   fileContent: string;
   type: string
@@ -36,6 +41,7 @@ export interface BirdhouseInterface {
   description: string;
   pictures: IBirdhousePicture[];
   styles: IBirdhouseStyle[];
+  socialMedia: ISocialMedia[];
 }
 
 export interface BirdhouseCartItemInterface {
