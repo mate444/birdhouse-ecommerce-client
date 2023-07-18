@@ -32,10 +32,13 @@ const columns = [{
   text: "description",
 }, {
   text: "styles",
+}, {
+  text: "social media",
 }];
 
 const BirdhouseTable: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [editable, setEditable] = useState(false);
   const [queryParams] = useSearchParams();
   const toast = useToast();
   const { getAll, update, remove, setSort } = useBirdhouseActions(toast);
@@ -50,7 +53,7 @@ const BirdhouseTable: FC = () => {
   }, [page, birdhouseState.birdhouseSort]);
   return (
     !isLoading ?
-      <Flex flexDir={"column"} gap={1}>
+      <Flex overflowX={"scroll"} flexDir={"column"} gap={1}>
         <Flex gap={5} alignItems={"center"} alignSelf={"center"}>
           <Link as={ReactLink} to="/birdhouse/create">
             <Text
@@ -63,7 +66,7 @@ const BirdhouseTable: FC = () => {
               Create a Birdhouse
             </Text>
           </Link>
-          <SortSelect setSort={setSort} route={`/admin/birdhouses?page=1`}/>
+          { !editable ? <SortSelect setSort={setSort} route={`/admin/birdhouses?page=1`}/> : null }
         </Flex>
         <Table minH={"80vh"} bgColor={"white"} variant="simple">
           <Thead>
@@ -90,6 +93,9 @@ const BirdhouseTable: FC = () => {
                 styles={b.styles}
                 pictures={b.pictures}
                 status={b.status}
+                socialMedia={b.socialMedia}
+                editable={editable}
+                setEditable={setEditable}
               />
             )) }
           </Tbody>
