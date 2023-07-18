@@ -1,17 +1,13 @@
 import { FC } from "react";
 import defaultBirdhousePicture from "../../assets/default_birdhouse.jpg";
 import {
-  Button,
   Card,
   CardBody,
   CardFooter,
   Heading,
   Image,
-  Text,
   Stack,
   IconButton,
-  Icon,
-  Flex,
   Link
 } from "@chakra-ui/react";
 import { Link as ReactLink } from "react-router-dom";

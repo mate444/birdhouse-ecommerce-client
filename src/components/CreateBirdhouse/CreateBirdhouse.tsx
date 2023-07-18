@@ -181,6 +181,7 @@ const CreateBirdhouse: FC = () => {
                       aria-label="Delete Style"
                       borderRadius={20}
                       icon={<FaTrashAlt />}
+                      backgroundColor={"transparent"}
                       isDisabled={styleFields.fields.length <= 1}
                       onClick={() => styleFields.remove(i)} />
                   </InputRightElement>
@@ -226,6 +227,7 @@ const CreateBirdhouse: FC = () => {
                       aria-label="Delete Style"
                       borderRadius={20}
                       icon={<FaTrashAlt />}
+                      backgroundColor={"transparent"}
                       isDisabled={socialMediaFields.fields.length <= 1}
                       onClick={() => socialMediaFields.remove(i)} />
                   </InputRightElement>
@@ -240,7 +242,7 @@ const CreateBirdhouse: FC = () => {
               borderRadius={20}
               w={"fit-content"}
               my={"5px"}
-              isDisabled={socialMediaFields.fields.length >= 4}
+              isDisabled={socialMediaFields.fields.length >= 5}
               onClick={() => socialMediaFields.append({ link: "" })}/>
             <Box
               bgColor={"white"}
