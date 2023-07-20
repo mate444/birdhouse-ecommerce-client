@@ -2,11 +2,10 @@ import { useSetRecoilState } from "recoil";
 import { useFetch } from "../hooks/useFetch";
 import { birdhousesAtom, birdhouseDetailAtom, IBirdhouseAtom } from "../states/birdhouse";
 import { ICreateBirdhouse, IUpdateBirdhouse, BirdhouseStatusEnum } from "../interfaces/Birdhouse.interface";
-import { NavigateFunction } from "react-router-dom";
 import { UseToastOptions } from "@chakra-ui/react";
 import { useError } from "../hooks/useError";
 
-export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, navigate?: NavigateFunction) {
+export function useBirdhouseActions (toast?: (args: UseToastOptions) => void) {
   const baseUrl = `${import.meta.env.VITE_API_URL}/birdhouse`;
   const birdhouseFetch = useFetch();
   const setBirdhouses = useSetRecoilState(birdhousesAtom);
@@ -18,7 +17,9 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
     getById,
     cleanBirdhouseDetail,
     update,
-    remove
+    remove,
+    setSort,
+    setSearch
   };
 
   async function getAll (page: string, search: string, sort?: string) {
@@ -50,14 +51,17 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
   async function create (birdhouse: ICreateBirdhouse) {
     try {
       const formData = new FormData();
+      if (!birdhouse.pictures) throw "Birdhouse pictures are required";
       for (let i = 0; i < birdhouse.pictures.length; i += 1) {
         formData.append("pictures", birdhouse.pictures[i]);
       }
-      const formatedStyles = birdhouse.styles.map((b: { name: string }) => b.name);
       formData.append("name", birdhouse.name);
       formData.append("price", birdhouse.price);
       formData.append("size", birdhouse.size);
-      formData.append("styles[]", JSON.stringify(formatedStyles));
+      birdhouse.styles.forEach((s) => formData.append("styles[]", s.name));
+      birdhouse.socialMedia.forEach((s) => {
+        formData.append("socialMedia[]", s.link);
+      });
       formData.append("description", String(birdhouse.description));
       formData.append("stock", birdhouse.stock);
       await birdhouseFetch.post(`${baseUrl}`, formData);
@@ -113,7 +117,6 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
       }
     } catch (err) {
       if (toast) {
-        console.log(err)
         useError(err, toast);
       }
     }
@@ -121,5 +124,23 @@ export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, na
 
   function cleanBirdhouseDetail () {
     setBirdhouseDetail(null);
+  }
+
+  function setSort (sort: string) {
+    setBirdhouses((oldState: IBirdhouseAtom) => {
+      return {
+        ...oldState,
+        birdhouseSort: sort,
+      };
+    });
+  }
+  
+  function setSearch (search: string) {
+    setBirdhouses((oldState: IBirdhouseAtom) => {
+      return {
+        ...oldState,
+        birdhouseSearch: search
+      };
+    });
   }
 }

@@ -1,4 +1,5 @@
 import validator from "validator";
+import { isValid, getAlpha2Code } from "i18n-iso-countries";
 
 function isInt (value: string, opts: validator.IsIntOptions) {
   return validator.isInt(value, opts);
@@ -31,6 +32,22 @@ function required (value: unknown) {
   return typeof value !== "undefined" || value !== null;
 }
 
+function isEmail (value: string) {
+  return validator.isEmail(value);
+}
+
+function isStrongPassword (value: string) {
+  return validator.isStrongPassword(value, { minNumbers: 1, minLength: 8, minSymbols: 1 });
+}
+
+function isCountry (value: string) {
+  return typeof value === "string" && isValid(getAlpha2Code(value, "en"));
+}
+
+function isUrl (value: string) {
+  return validator.isURL(value);
+}
+
 export {
   isArray,
   isInt,
@@ -39,5 +56,9 @@ export {
   maxSizeArray,
   minLength,
   isString,
-  required
+  required,
+  isEmail,
+  isStrongPassword,
+  isCountry,
+  isUrl
 };

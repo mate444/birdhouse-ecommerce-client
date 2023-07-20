@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders, RawAxiosRequestHeaders } from "axios";
+import axios, { RawAxiosRequestHeaders } from "axios";
 
 enum HttpMethod {
   DELETE = "delete",
@@ -14,7 +14,7 @@ export const useFetch = () => {
     get: request(HttpMethod.GET),
     patch: request(HttpMethod.PATCH),
     post: request(HttpMethod.POST),
-    putt: request(HttpMethod.PUT)
+    put: request(HttpMethod.PUT)
   };
   function request (method: HttpMethod) {
     return async (url?: string, body?: any, headers?: RawAxiosRequestHeaders) => {

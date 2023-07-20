@@ -8,26 +8,30 @@ interface ISortSelectProps {
 }
 
 const sortTypes = [
-  {
-    sort: "Price: Ascendent",
-    value: "price_asc"
-  },
-  {
-    sort: "Price: Descendent",
-    value: "price_desc"
-  },
+  // {
+  //   sort: "Price: Ascendent",
+  //   value: "price_asc"
+  // },
+  // {
+  //   sort: "Price: Descendent",
+  //   value: "price_desc"
+  // },
   {
     sort: "A-Z",
     value: "name_asc"
   },
   {
-    sort: "Size: Ascendent",
-    value: "size_asc"
-  },
-  {
-    sort: "Size: Descendent",
-    value: "size_desc"
-  },
+    sort: "Z-A",
+    value: "name_desc"
+  }
+  // {
+  //   sort: "Size: Ascendent",
+  //   value: "size_asc"
+  // },
+  // {
+  //   sort: "Size: Descendent",
+  //   value: "size_desc"
+  // },
 ];
 
 const SortSelect: FC<ISortSelectProps> = (props) => {
@@ -37,7 +41,11 @@ const SortSelect: FC<ISortSelectProps> = (props) => {
     props.setSort(e.target.value);
   };
   return (
-    <Select placeholder="Sort by:" onChange={handleChange}>
+    <Select
+      bgColor={"white"}
+      textAlign={"center"}
+      placeholder="Sort by:"
+      onChange={handleChange}>
       {
         sortTypes.map((s) => (
           <option key={s.value} value={s.value}>{s.sort}</option>

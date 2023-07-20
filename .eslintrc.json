@@ -40,6 +40,9 @@
         "react-in-jsx-scope": [
             "off",
             "always"
+        ],
+        "react/react-in-jsx-scope": [
+            "off"
         ]
     }
 }

@@ -6,78 +6,104 @@ import {
   Tbody,
   Tr,
   Th,
-  useToast
+  useToast,
+  Link,
+  Flex,
+  Text
 } from "@chakra-ui/react";
+import Pagination from "../Pagination/Pagination";
 import BirdhouseCell from "../BirdhouseCell/BirdhouseCell";
+import SortSelect from "../SortSelect/SortSelect";
 import { useBirdhouseActions } from "../../actions/birdhouse.actions";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link as ReactLink } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { birdhousesAtom } from "../../states/birdhouse";
 import { BirdhouseInterface } from "../../interfaces/Birdhouse.interface";
 
 const columns = [{
   text: "Name",
-  isNumeric: false
 }, {
   text: "price",
-  isNumeric: true
 }, {
   text: "stock",
-  isNumeric: true
 }, {
   text: "size",
-  isNumeric: true
 }, {
   text: "description",
-  isNumeric: false
 }, {
   text: "styles",
-  isNumeric: false
+}, {
+  text: "social media",
 }];
 
 const BirdhouseTable: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [queryParams, setQueryParams] = useSearchParams();
+  const [editable, setEditable] = useState(false);
+  const [queryParams] = useSearchParams();
   const toast = useToast();
-  const { getAll, update, remove } = useBirdhouseActions(toast);
+  const { getAll, update, remove, setSort } = useBirdhouseActions(toast);
   const birdhouseState = useRecoilValue(birdhousesAtom);
   let page = queryParams.get("page");
   useEffect(() => {
     if (page === null) page = "1";
-    getAll(page, birdhouseState.birdhouseSearch).then(() => {
+    getAll(page, birdhouseState.birdhouseSearch, birdhouseState.birdhouseSort).then(() => {
       setIsLoading(false);
+      window.scrollTo(0, 0);
     });
-  }, []);
+  }, [page, birdhouseState.birdhouseSort]);
   return (
-    !isLoading ? <Table variant="simple">
-      <Thead>
-        <Tr>
-          { columns.map((c) => (
-            <Th key={c.text} isNumeric={c.isNumeric}>
-              {c.text}
-            </Th>
-          )) }
-        </Tr>
-      </Thead>
-      <Tbody>
-        {  birdhouseState.birdhouses.map((b: BirdhouseInterface) => (
-          <BirdhouseCell
-            key={b.birdhouseId}
-            birdhouseId={b.birdhouseId}
-            update={update}
-            remove={remove}
-            description={b.description}
-            name={b.name}
-            price={`${b.price}`}
-            size={`${b.size}`}
-            stock={`${b.stock}`}
-            styles={b.styles}
-            pictures={b.pictures}
-            status={b.status}
-          />
-        )) }
-      </Tbody>
-    </Table>
+    !isLoading ?
+      <Flex overflowX={"scroll"} flexDir={"column"} gap={1}>
+        <Flex gap={5} alignItems={"center"} alignSelf={"center"}>
+          <Link as={ReactLink} to="/birdhouse/create">
+            <Text
+              whiteSpace={"nowrap"}
+              m="10px"
+              bgColor={"#1B9706"}
+              color="white"
+              borderRadius={20}
+              p="10px">
+              Create a Birdhouse
+            </Text>
+          </Link>
+          { !editable ? <SortSelect setSort={setSort} route={`/admin/birdhouses?page=1`}/> : null }
+        </Flex>
+        <Table minH={"80vh"} bgColor={"white"} variant="simple">
+          <Thead>
+            <Tr border={"1px solid rgba(0, 0, 0, .2)"}>
+              { columns.map((c) => (
+                <Th border={"1px solid rgba(0, 0, 0, .2)"} key={c.text}>
+                  {c.text}
+                </Th>
+              )) }
+            </Tr>
+          </Thead>
+          <Tbody>
+            {  birdhouseState.birdhouses.map((b: BirdhouseInterface) => (
+              <BirdhouseCell
+                key={b.birdhouseId}
+                birdhouseId={b.birdhouseId}
+                update={update}
+                remove={remove}
+                description={b.description}
+                name={b.name}
+                price={`${b.price}`}
+                size={`${b.size}`}
+                stock={`${b.stock}`}
+                styles={b.styles}
+                pictures={b.pictures}
+                status={b.status}
+                socialMedia={b.socialMedia}
+                editable={editable}
+                setEditable={setEditable}
+              />
+            )) }
+          </Tbody>
+        </Table>
+        <Flex justifyContent={"center"}>
+          <Pagination route="/admin/birdhouses" totalPages={parseInt(birdhouseState.totalPages || "1")} currentPage={parseInt(page || "1")} sort={birdhouseState.birdhouseSort}/>
+        </Flex>
+      </Flex>
       : <CircularProgress isIndeterminate/>);
 };
 

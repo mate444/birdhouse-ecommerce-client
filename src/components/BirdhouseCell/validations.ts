@@ -1,5 +1,6 @@
 import { 
   isInt,
+  isUrl,
   maxLength,
   minLength,
   required,
@@ -36,5 +37,8 @@ export const birdhouseValidations = {
     required: (value: unknown) => required(value) || "Birdhouse styles are required",
     minLength: (value: string) => minLength(value, 1) || "Birdhouse style is too short",
     maxLength: (value: string) => maxLength(value, 45) || "Birdhouse style is too long",
+  },
+  socialMedia: {
+    isUrl: (value: string) => isUrl(value) || "Birdhouse social media must be a URL" 
   }
 };

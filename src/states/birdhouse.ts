@@ -6,6 +6,7 @@ export interface IBirdhouseAtom {
   birdhouses: BirdhouseInterface[] | []
   totalPages: number;
   birdhouseSearch: string;
+  birdhouseSort: string;
 }
 
 // Recoil Atom type gets contradicted when using any of the hooks, so had to give it type any in order to
@@ -16,7 +17,8 @@ export const birdhousesAtom: RecoilState<any> = atom({
   default: {
     birdhouses: [],
     birdhouseSearch: "",
-    totalPages: 1
+    totalPages: 1,
+    birdhouseSort: ""
   }
 });
 

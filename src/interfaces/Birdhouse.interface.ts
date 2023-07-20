@@ -12,9 +12,18 @@ interface IBirdhouseStyle {
   style: string;
 }
 
+interface ICreateBirdhouseSocialMedia {
+  link: string;
+}
+
 interface IBirdhousePicture {
   id: number;
   picture: string;
+}
+
+export interface ISocialMedia {
+  link: string;
+  name: string;
 }
 
 export interface IBirdhouseFormPicture {
@@ -32,6 +41,7 @@ export interface BirdhouseInterface {
   description: string;
   pictures: IBirdhousePicture[];
   styles: IBirdhouseStyle[];
+  socialMedia: ISocialMedia[];
 }
 
 export interface BirdhouseCartItemInterface {
@@ -49,8 +59,9 @@ export interface ICreateBirdhouse {
   size: string;
   stock: string;
   description: string | undefined;
-  pictures: FileList;
+  pictures: Blob[];
   styles: CreateBirdhouseStyle[];
+  socialMedia: ICreateBirdhouseSocialMedia[];
 }
 
 export interface IUpdateBirdhouse {
@@ -63,4 +74,5 @@ export interface IUpdateBirdhouse {
   pictures: string[];
   styles: string[];
   status: BirdhouseStatusEnum;
+  socialMedia: string[];
 }
