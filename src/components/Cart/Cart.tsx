@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import { FC, useEffect } from "react";
 import {
   Box,
   Heading,
@@ -9,7 +9,6 @@ import { useRecoilValue } from "recoil";
 import { useCartActions } from "../../actions/cart.actions";
 import { cartAtom, cartTotalPriceSelector, cartTotalItemsSelector } from "../../states/cart";
 import { userAtom } from "../../states/user";
-import { useNavigate } from "react-router-dom";
 import { BirdhouseCartItemInterface } from "../../interfaces/Birdhouse.interface";
 import CartItem from "../CartItem/CartItem";
 
@@ -19,9 +18,8 @@ const Cart: FC = () => {
   const cartTotalItems = useRecoilValue(cartTotalItemsSelector);
   const userData = useRecoilValue(userAtom);
   const toast = useToast();
-  const navigate = useNavigate();
 
-  const { getCart, goToCheckout } = useCartActions(toast, navigate);
+  const { getCart, goToCheckout } = useCartActions(toast);
   useEffect(() => {
     getCart();
   }, []);

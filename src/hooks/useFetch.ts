@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders, RawAxiosRequestHeaders } from "axios";
+import axios, { RawAxiosRequestHeaders } from "axios";
 
 enum HttpMethod {
   DELETE = "delete",

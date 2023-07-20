@@ -85,7 +85,7 @@ const Login: FC = () => {
                     pr={"20px"}
                     bgColor={"white"}
                     borderRadius={"0px 20px 20px 0px"}>
-                    <Tooltip label="Password must contain at least 1 number, 8 characters and 1 symbol">?</Tooltip>
+                    <Tooltip label="Password must contain 1 number, 8 characters, 1 uppercase letter and 1 symbol">?</Tooltip>
                   </Flex>
                 </Flex>
                 <Button

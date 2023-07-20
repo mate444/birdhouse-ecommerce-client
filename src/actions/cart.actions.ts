@@ -4,9 +4,8 @@ import { BirdhouseCartItemInterface } from "../interfaces/Birdhouse.interface";
 import { useError } from "../hooks/useError";
 import { useFetch } from "../hooks/useFetch";
 import { UseToastOptions } from "@chakra-ui/react";
-import { NavigateFunction } from "react-router-dom";
 
-export function useCartActions (toast?: (args: UseToastOptions) => void, navigate?: NavigateFunction) {
+export function useCartActions (toast?: (args: UseToastOptions) => void) {
   const setCart = useSetRecoilState(cartAtom);
   const cartFetch = useFetch();
   return {

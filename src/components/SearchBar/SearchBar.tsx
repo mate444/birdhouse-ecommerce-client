@@ -19,7 +19,7 @@ const SearchBar: FC<ISearchBarProps> = (props) => {
         placeholder="Search..."
         _placeholder={{ color: "white", opacity: 0.5 }}
         onKeyDown={(e) => {
-          if (e.key === "Enter") props.handleSubmit(search);
+          if (e.key === "Enter") props.handleSubmit(search.trim());
         }} onChange={handleChange} value={search} />
     </Box>
   );

@@ -2,11 +2,10 @@ import { useSetRecoilState } from "recoil";
 import { useFetch } from "../hooks/useFetch";
 import { birdhousesAtom, birdhouseDetailAtom, IBirdhouseAtom } from "../states/birdhouse";
 import { ICreateBirdhouse, IUpdateBirdhouse, BirdhouseStatusEnum } from "../interfaces/Birdhouse.interface";
-import { NavigateFunction } from "react-router-dom";
 import { UseToastOptions } from "@chakra-ui/react";
 import { useError } from "../hooks/useError";
 
-export function useBirdhouseActions (toast?: (args: UseToastOptions) => void, navigate?: NavigateFunction) {
+export function useBirdhouseActions (toast?: (args: UseToastOptions) => void) {
   const baseUrl = `${import.meta.env.VITE_API_URL}/birdhouse`;
   const birdhouseFetch = useFetch();
   const setBirdhouses = useSetRecoilState(birdhousesAtom);
