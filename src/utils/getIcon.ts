@@ -5,7 +5,7 @@ import {
   FaTumblr,
   FaFacebook,
   FaPinterest,
-  FaSignInAlt
+  FaShareSquare
 } from "react-icons/fa";
 import { IconType } from "react-icons";
 
@@ -22,6 +22,6 @@ export function getSocialMediaIcon (name: string): IconType {
     "facebook": FaFacebook,
     "pinterest": FaPinterest
   };
-  if (icons[name] === undefined) return FaSignInAlt;
+  if (icons[name] === undefined) return FaShareSquare;
   return icons[name];
 }

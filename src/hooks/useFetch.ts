@@ -14,7 +14,7 @@ export const useFetch = () => {
     get: request(HttpMethod.GET),
     patch: request(HttpMethod.PATCH),
     post: request(HttpMethod.POST),
-    putt: request(HttpMethod.PUT)
+    put: request(HttpMethod.PUT)
   };
   function request (method: HttpMethod) {
     return async (url?: string, body?: any, headers?: RawAxiosRequestHeaders) => {

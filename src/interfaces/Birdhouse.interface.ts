@@ -21,7 +21,7 @@ interface IBirdhousePicture {
   picture: string;
 }
 
-interface ISocialMedia {
+export interface ISocialMedia {
   link: string;
   name: string;
 }
@@ -74,4 +74,5 @@ export interface IUpdateBirdhouse {
   pictures: string[];
   styles: string[];
   status: BirdhouseStatusEnum;
+  socialMedia: string[];
 }

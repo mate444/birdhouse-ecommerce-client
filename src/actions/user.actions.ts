@@ -54,6 +54,14 @@ export function useUserActions (toast: (args: UseToastOptions) => void, navigate
     try {
       await userFetch.delete(`${baseUrl}/logout`);
       setUser("{}");
+      if (navigate) navigate("/");
+      toast({
+        position: "top-right",
+        title: "Logged out succesfully",
+        duration: 5000,
+        isClosable: true,
+        status: "info"
+      });
     } catch (err) {
       useError(err, toast);
     }

@@ -12,10 +12,11 @@ import {
   ButtonGroup,
   CircularProgress,
   Flex,
+  Textarea,
 } from "@chakra-ui/react";
 import { FaPen, FaTimes, FaTrashRestore, FaSave, FaRegPlusSquare, FaTrash } from "react-icons/fa";
 import { birdhouseValidations, BirdhouseCellError } from "./validations";
-import { IUpdateBirdhouse, BirdhouseStatusEnum } from "../../interfaces/Birdhouse.interface";
+import { IUpdateBirdhouse, BirdhouseStatusEnum, ISocialMedia } from "../../interfaces/Birdhouse.interface";
 
 interface IBirdhouseCellProps {
   birdhouseId: string;
@@ -29,9 +30,26 @@ interface IBirdhouseCellProps {
   update: (birdhouse: IUpdateBirdhouse) => Promise<void>;
   remove: (body: { birdhouseId: string, status: BirdhouseStatusEnum }) => Promise<void>;
   pictures: { picture: string; id: number }[];
+  socialMedia: ISocialMedia[];
+  editable: boolean;
+  setEditable: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stock, description, size, styles, pictures, status, update, remove }) => {
+const BirdhouseCell: FC<IBirdhouseCellProps> = ({
+  socialMedia,
+  birdhouseId,
+  name,
+  price,
+  stock,
+  description,
+  size,
+  styles,
+  pictures,
+  status,
+  update,
+  remove,
+  editable,
+  setEditable }) => {
   const [changes, setChanges] = useState<IUpdateBirdhouse>({
     birdhouseId,
     name,
@@ -41,13 +59,13 @@ const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stoc
     size,
     status,
     styles: styles.map((s) => s.style),
-    pictures: pictures.map((p) => p.picture)
+    pictures: pictures.map((p) => p.picture),
+    socialMedia: socialMedia.map((s) => s.link)
   });
   const [errors, setErrors] = useState<BirdhouseCellError>({});
-  const [editable, setEditable] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = {
       ...changes,
       [e.target.name]: e.target.value
@@ -56,12 +74,18 @@ const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stoc
     if (!isDirty) setIsDirty(true);
   };
 
-  const handleStyleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleMultipleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newValue = {
-      ...changes,
-      styles: [...changes.styles]
+      ...changes
     };
-    newValue.styles[index] = e.target.value;
+    if (e.target.name === "styles") {
+      newValue.styles = [...changes.styles];
+      newValue.styles[index] = e.target.value;
+    }
+    if (e.target.name === "socialMedia") {
+      newValue.socialMedia = [...changes.socialMedia];
+      newValue.socialMedia[index] = e.target.value;
+    }
     setChanges(newValue);
     if (!isDirty) setIsDirty(true);
   };
@@ -89,49 +113,55 @@ const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stoc
   }, [changes]);
   return (
     <Tr>
-      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+      <Td w={"150px"} border={"1px solid rgba(0, 0, 0, .2)"}>
         <Text color={"red"}>{ errors.name && errors.name }</Text>
         <Editable isDisabled={editable === false} defaultValue={changes.name  }>
           <EditablePreview h={"full"} width="full"/>
           <Input as={EditableInput} name="name" value={changes.name} onChange={handleChange}/>
         </Editable>
       </Td>
-      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+      <Td w={"100px"} border={"1px solid rgba(0, 0, 0, .2)"}>
         <Text color={"red"}>{ errors.price && errors.price }</Text>
         <Editable isDisabled={editable === false} defaultValue={`${price}`}>
           <EditablePreview h={"full"} width="full"/>
           <Input as={EditableInput} name="price" value={changes.price} onChange={handleChange} type="number"/>
         </Editable>
       </Td>
-      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+      <Td w={"100px"} border={"1px solid rgba(0, 0, 0, .2)"}>
         <Text color={"red"}>{ errors.stock && errors.stock }</Text>
         <Editable isDisabled={editable === false} defaultValue={`${stock}`}>
           <EditablePreview h={"full"} width="full"/> 
           <Input as={EditableInput} name="stock" value={changes.stock} onChange={handleChange} type="number" />
         </Editable>
       </Td>
-      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+      <Td w={"100px"} border={"1px solid rgba(0, 0, 0, .2)"}>
         <Text color={"red"}>{ errors.size && errors.size }</Text>
         <Editable isDisabled={editable === false} defaultValue={`${size}`}>
           <EditablePreview h={"full"} width="full"/>
           <Input as={EditableInput} name="size" value={changes.size} onChange={handleChange} type="number"/>
         </Editable>
       </Td>
-      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+      <Td w={"300px"} border={"1px solid rgba(0, 0, 0, .2)"}>
         <Text color={"red"}>{ errors.description && errors.description }</Text>
         <Editable isDisabled={editable === false} defaultValue={description}>
           <EditablePreview minH={"40px"} width="full"/>
-          <Input as={EditableInput} name="description" value={changes.description} onChange={handleChange}/>
+          <EditableInput as={Textarea} name="description" value={changes.description} onChange={handleChange}/>
         </Editable>
       </Td>
-      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+      <Td maxW={"300px"} w={"300px"} border={"1px solid rgba(0, 0, 0, .2)"}>
         {changes.styles.map((s, i) => (
           <Flex gap={1} flexDir={"column"} key={i}>
             <Text color={"red"}>{errors.styles && errors.styles[i]}</Text>
             <Flex>
-              <Editable isDisabled={editable === false} defaultValue={s} w={"100%"}>
-                <EditablePreview placeholder="Insert new style" h={"full"} width="full"/>
-                <Input as={EditableInput} name="styles" value={changes.styles[i]} onChange={(e) => handleStyleChange(e, i)}/>
+              <Editable
+                isDisabled={editable === false}
+                whiteSpace={"nowrap"}
+                textOverflow={"clip"}
+                overflow={"hidden"}
+                defaultValue={s}
+                w={"100%"}>
+                <EditablePreview placeholder="Insert new style" h={"full"} w="full"/>
+                <Input as={EditableInput} name="styles" value={changes.styles[i]} onChange={(e) => handleMultipleChange(e, i)}/>
               </Editable>
               { editable ?
                 <Button
@@ -151,7 +181,43 @@ const BirdhouseCell: FC<IBirdhouseCellProps> = ({ birdhouseId, name, price, stoc
           <FaRegPlusSquare />
         </Button> : null}
       </Td>
-      <Td border={"1px solid rgba(0, 0, 0, .2)"}>
+      <Td maxW={"300px"} w={"300px"} border={"1px solid rgba(0, 0, 0, .2)"}>
+        { changes.socialMedia.map((s, i) => (
+          <Flex gap={1} flexDir={"column"} key={i}>
+            <Text color={"red"}>{errors.socialMedia && errors.socialMedia[i]}</Text>
+            <Flex>
+              <Editable
+                w={"240px"}
+                isDisabled={editable === false}
+                whiteSpace={"nowrap"}
+                textOverflow={"clip"}
+                overflow={"hidden"}
+                defaultValue={s}>
+                <EditablePreview
+                  placeholder="Insert new social media"
+                  h={"full"}
+                  w="full"/>
+                <Input w={"100%"} as={EditableInput} name="socialMedia" value={changes.socialMedia[i]} onChange={(e) => handleMultipleChange(e, i)}/>
+              </Editable>
+              { editable ?
+                <Button
+                  m={"auto"}
+                  isDisabled={changes.socialMedia.length <= 1}
+                  onClick={() => setChanges({...changes, socialMedia: changes.socialMedia.filter((_st, index) => i !== index)})}>
+                  <FaTrash />
+                </Button> :
+                null }
+            </Flex>
+          </Flex>
+        ))}
+        { editable ? <Button
+          mt={"10px"}
+          isDisabled={changes.socialMedia.length >= 5}
+          onClick={() => setChanges({ ...changes, socialMedia: [...changes.socialMedia, ""] })}>
+          <FaRegPlusSquare />
+        </Button> : null}
+      </Td>
+      <Td w={"100px"} border={"1px solid rgba(0, 0, 0, .2)"}>
         <ButtonGroup>
           <Button onClick={() => setEditable(!editable)}>{ !editable ? <FaPen/> : <FaTimes />} </Button>
           { isDirty ? <Button onClick={handleSubmit} disabled={isSubmitting}> { !isSubmitting ? <FaSave /> : <CircularProgress isIndeterminate/> } </Button> : null }
